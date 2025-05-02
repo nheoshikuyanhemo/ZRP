@@ -6,13 +6,13 @@ contract ZorgRpAdvanced {
     string public symbol = "ZRP";
     uint8 public decimals = 18;
     uint256 public totalSupply;
-    
+
     uint256 public baseFee = 10;        // 0.1%
     uint256 public sniperFee = 5000;    // 50%
     uint256 public launchBlock;
     bool public antiSniperEnabled = true;
     uint256 public sniperBlockLimit = 5;
-    
+
     address public owner;
     address public feeReceiver;
     address public wrappedNative;
@@ -115,7 +115,6 @@ contract ZorgRpAdvanced {
 
         balanceOf[sender] -= amount;
         balanceOf[recipient] += (amount - feeAmount);
-
         emit Transfer(sender, recipient, amount - feeAmount);
 
         if (!isHolder[recipient]) {
@@ -128,15 +127,15 @@ contract ZorgRpAdvanced {
             sender != liquidityPool &&
             recipient != liquidityPool
         ) {
-            addLiquidity(liquidityThreshold);
+            _addLiquidity(liquidityThreshold);
         }
     }
 
-    function addLiquidity(uint256 tokenAmount) internal {
+    function _addLiquidity(uint256 tokenAmount) private {
         balanceOf[address(this)] -= tokenAmount;
         balanceOf[liquidityPool] += tokenAmount;
         emit Transfer(address(this), liquidityPool, tokenAmount);
-        // Normally sync with DEX here
+        // Optionally: sync with DEX pair here
     }
 
     function distributeRewards() public payable onlyOwner {
